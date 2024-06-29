@@ -1,0 +1,36 @@
+<!-- <div *ngIf="questions" class="quiz-screen flex flex-col items-center">
+    <h1 class="text-2xl font-semibold mb-4 text-center">
+        Question {{ questionIndex + 1 }}
+    </h1>
+    <p class="mt-5">{{ decode(questions[questionIndex].question) }}</p>
+    <div *ngFor="let option of questions[questionIndex].options; let id = index" class="mt-2">
+        <button
+            class="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md"
+            (click)="handleClickAnswer(option)">
+            {{ decode(option) }}
+        </button>
+    </div>
+</div> -->
+<div *ngIf="questions" class="">
+  <div class="quiz-screen">
+    <div class="text-center">
+      <h4 class="text-2xl font-semibold mb-4">Question {{ questionIndex + 1
+        }}</h4>
+      <p class="text-lg mb-4">{{ decode(questions[questionIndex].question)
+        }}</p>
+    </div>
+    <div *ngFor="let option of questions[questionIndex].options; let id = index"
+      class="mt-2">
+      <button (click)="handleClickAnswer(option)"
+        class="border border-blue-400 hover:bg-blue-500 hover:text-white text-gray-700 px-4 py-2 rounded-md shadow-md w-full">
+        {{ decode(option) }}
+      </button>
+    </div>
+  </div>
+  <div class="mt-5 font-bold text-slate-600 flex justify-between w-full">
+    <button (click)="prevQuestion()"
+      class="px-2 py-1 bg-slate-300 rounded">prev</button>
+    <button (click)="nextQuestion()"
+      class="px-2 py-1 bg-slate-300 rounded">next</button>
+  </div>
+</div>
