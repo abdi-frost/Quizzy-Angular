@@ -11,7 +11,7 @@
         </button>
     </div>
 </div> -->
-<div *ngIf="questions" class="">
+<!-- <div *ngIf="questions" class="">
   <div class="quiz-screen">
     <div class="text-center">
       <h4 class="text-2xl font-semibold mb-4">Question {{ questionIndex + 1
@@ -33,4 +33,35 @@
     <button (click)="nextQuestion()"
       class="px-2 py-1 bg-slate-300 rounded">next</button>
   </div>
+</div> -->
+
+<div *ngIf="error" class="text-center mt-5">
+  <p class="text-red-500">Failed to fetch questions. Please try again.</p>
+  <button (click)="fetchQuestionsAgain()" class="mt-3 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">
+    Try Again
+  </button>
+  <button (click)="goHome()" class="mt-3 mx-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">
+    Home
+  </button>
+</div>
+
+<div *ngIf="!error && !loading" class="quiz-screen">
+  <div class="text-center">
+    <h4 class="text-2xl font-semibold mb-4">Question {{ questionIndex + 1 }}</h4>
+    <p class="text-lg mb-4">{{ decode(questions[questionIndex].question) }}</p>
+  </div>
+  <div *ngFor="let option of questions[questionIndex].options; let id = index" class="mt-2">
+    <button (click)="handleClickAnswer(option)" class="border border-blue-400 hover:bg-blue-500 hover:text-white text-gray-700 px-4 py-2 rounded-md shadow-md w-full">
+      {{ decode(option) }}
+    </button>
+  </div>
+</div>
+
+<div class="mt-5 font-bold text-slate-600 flex justify-between w-full" *ngIf="!error && !loading">
+  <button (click)="prevQuestion()" class="px-2 py-1 bg-slate-300 rounded">Prev</button>
+  <button (click)="nextQuestion()" class="px-2 py-1 bg-slate-300 rounded">Next</button>
+</div>
+
+<div *ngIf="loading" class="text-center mt-5">
+  <p>Loading...</p>
 </div>

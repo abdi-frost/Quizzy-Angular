@@ -13,6 +13,8 @@ export class QuizComponent implements OnInit, OnDestroy {
   questionIndex: number = 0;
   maxIndex: number = 0;
   selectedOptions: string[] = [];
+  loading: boolean = false;
+  error: boolean = false;
   private subscription: Subscription = new Subscription();
 
   constructor(
@@ -30,6 +32,7 @@ export class QuizComponent implements OnInit, OnDestroy {
       this.maxIndex = this.questions.length - 1;
       console.log("the quiz state we got in the quiz component", quizState);
     } else {
+      this.loading = true;
       const params = this.quizzyService.getQuizParams();
       if (!params) {
         this.router.navigate(['/']);
@@ -41,7 +44,9 @@ export class QuizComponent implements OnInit, OnDestroy {
               question.options = this.shuffleOptions(question);
             });
             this.maxIndex = this.questions.length - 1;
-            this.saveState({questions: this.questions});
+            this.saveState({ questions: this.questions });
+            this.loading = false;
+            this.error = response.response_code === 1;
           })
         );
       }
@@ -49,8 +54,10 @@ export class QuizComponent implements OnInit, OnDestroy {
   }
 
   fetchQuestionsAgain(): void {
+    this.loading = true;
     const params = this.quizzyService.getQuizParams();
     if (!params) {
+      this.loading = false;
       this.router.navigate(['/']);
     } else {
       this.subscription.add(
@@ -60,19 +67,24 @@ export class QuizComponent implements OnInit, OnDestroy {
             question.options = this.shuffleOptions(question);
           });
           this.maxIndex = this.questions.length - 1;
-          this.saveState({questions: this.questions});
+          this.saveState({ questions: this.questions });
+          this.error = response.response_code === 1 || response.response_code === 5;
         })
       );
     }
   }
 
+  goHome(): void { 
+    this.router.navigate(['/']);
+  }
+
   handleClickAnswer(selectedOption: string): void {
     this.selectedOptions[this.questionIndex] = selectedOption;
-    this.saveState({selectedOptions: this.selectedOptions});
+    this.saveState({ selectedOptions: this.selectedOptions });
 
     if (this.questionIndex < this.maxIndex) {
       this.questionIndex += 1;
-      this.saveState({questionsIndex: this.questionIndex});
+      this.saveState({ questionsIndex: this.questionIndex });
     } else {
       this.cleanupLocalStorage();
       this.router.navigate(['/result']);
@@ -104,7 +116,7 @@ export class QuizComponent implements OnInit, OnDestroy {
 
   saveState(obj: any): void {
     const prevState = this.quizzyService.getQuizState()
-    this.quizzyService.saveQuizState({...prevState, ...obj});
+    this.quizzyService.saveQuizState({ ...prevState, ...obj });
   }
 
   cleanupLocalStorage(): void {
